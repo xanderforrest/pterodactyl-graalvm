@@ -33,6 +33,19 @@ export INTERNAL_IP
 # Switch to the container's working directory
 cd /home/container || exit 1
 
+# --- rclone (user-space install; no root needed) ---
+RCLONE_BIN="/home/container/bin/rclone"
+if [ ! -x "$RCLONE_BIN" ]; then
+  mkdir -p /home/container/bin
+  curl -fsSL https://downloads.rclone.org/rclone-current-linux-amd64.tar.gz -o /home/container/rclone.tgz
+  tar -xzf /home/container/rclone.tgz -C /home/container
+  mv /home/container/rclone-*-linux-amd64/rclone "$RCLONE_BIN"
+  chmod +x "$RCLONE_BIN"
+  rm -rf /home/container/rclone.tgz /home/container/rclone-*-linux-amd64
+fi
+export RCLONE_BIN
+# --- end rclone install ---
+
 # --- CUSTOM HOOK: seed booty.sh if missing ---
 BOOTY_FILE="/home/container/booty.sh"
 
