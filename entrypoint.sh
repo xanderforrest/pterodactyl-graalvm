@@ -58,7 +58,7 @@ fi
 
 echo -e "\033[1m\033[33mcontainer@pterodactyl~ \033[0mRunning pre-start script $BOOTY_FILE"
 /bin/bash "$BOOTY_FILE" || echo "[booty.sh] failed but continuing…"
-# --- END CUSTOM HOOK ---
+# --- END CUSTOM HOOK --
 
 # Print Java version
 printf "\033[1m\033[33mcontainer@pterodactyl~ \033[0mjava -version\n"
