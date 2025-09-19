@@ -33,15 +33,20 @@ export INTERNAL_IP
 # Switch to the container's working directory
 cd /home/container || exit 1
 
-# --- rclone (user-space install; no root needed) ---
+# --- rclone (user-space install via unzip) ---
 RCLONE_BIN="/home/container/bin/rclone"
 if [ ! -x "$RCLONE_BIN" ]; then
   mkdir -p /home/container/bin
-  curl -fsSL https://downloads.rclone.org/rclone-current-linux-amd64.tar.gz -o /home/container/rclone.tgz
-  tar -xzf /home/container/rclone.tgz -C /home/container
-  mv /home/container/rclone-*-linux-amd64/rclone "$RCLONE_BIN"
+  curl -fsSL https://downloads.rclone.org/rclone-current-linux-amd64.zip -o /home/container/rclone.zip
+  unzip -o /home/container/rclone.zip -d /home/container/
+  # find the extracted rclone binary regardless of version string
+  RCLONE_PATH="$(find /home/container -maxdepth 2 -type f -name rclone | head -n1)"
+  if [ -z "$RCLONE_PATH" ]; then
+    echo "[rclone] extract failed"; exit 1
+  fi
+  mv "$RCLONE_PATH" "$RCLONE_BIN"
   chmod +x "$RCLONE_BIN"
-  rm -rf /home/container/rclone.tgz /home/container/rclone-*-linux-amd64
+  rm -rf /home/container/rclone.zip /home/container/rclone-*-linux-amd64
 fi
 export RCLONE_BIN
 # --- end rclone install ---
